@@ -5,40 +5,76 @@ import Header from "@/components/Header";
 
 export default function Home() {
   const [showAlternateHeader, setShowAlternateHeader] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setShowAlternateHeader(currentScrollY > lastScrollY && currentScrollY > 50);
-      setLastScrollY(currentScrollY);
+      // Ao passar da metade da altura do viewport, trocamos para o conteúdo.
+      if (window.scrollY > window.innerHeight / 2) {
+        setShowAlternateHeader(true);
+      } else {
+        setShowAlternateHeader(false);
+      }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return (
-    <div className="h-screen flex-col items-center justify-items-center mt-40">
-      {/* Header Principal */}
+    // 200vh para haver espaço de sobra para rolagem e ativar a transição
+    <div className="h-[200vh] w-full">
+      {/* SECTION HEADER */}
       <motion.div
+        // sticky + top-0 mantém este bloco ocupando a tela ao rolar
+        className="sticky top-0 h-screen flex items-center justify-center relative"
         initial={{ opacity: 1, y: 0 }}
-        animate={{ opacity: showAlternateHeader ? 0 : 1, y: showAlternateHeader ? -50 : 0 }}
+        animate={{
+          opacity: showAlternateHeader ? 0 : 1,
+          y: showAlternateHeader ? -50 : 0,
+        }}
         transition={{ duration: 0.3 }}
       >
         <Header />
+
+        {/* SETA ANIMADA - aparece só enquanto o Header está visível */}
+        {!showAlternateHeader && (
+          <motion.div
+            className="absolute bottom-10 flex flex-col items-center"
+            initial={{ opacity: 1 }}
+            animate={{ y: [0, 10, 0] }}
+            transition={{
+              repeat: Infinity,
+              duration: 1,
+              ease: "easeInOut",
+            }}
+          >
+            {/* Você pode trocar esse SVG por outro ícone de seta de sua preferência */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </motion.div>
+        )}
       </motion.div>
 
-      {/* Header Alternativo */}
+      {/* SECTION CONTEÚDO PRINCIPAL */}
       <motion.div
+        className="sticky top-0 h-screen flex items-center justify-center"
         initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: showAlternateHeader ? 1 : 0, y: showAlternateHeader ? 0 : -50 }}
+        animate={{
+          opacity: showAlternateHeader ? 1 : 0,
+          y: showAlternateHeader ? 0 : -50,
+        }}
         transition={{ duration: 0.3 }}
-        className="shadow-lg"
       >
-        <div className="mt-20 border-solid border-2 border-gray-200">
+        <div className="w-[480px] h-[720px] border-2 border-gray-300 p-4 flex flex-col items-center justify-center">
           <h1>Conteúdo principal</h1>
-          <p>Role para baixo para ver o efeito.</p>
+          <p>Você chegou aqui rolando!</p>
         </div>
       </motion.div>
     </div>
