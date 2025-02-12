@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
+import Forms from "@/components/Forms";
 
 export default function Home() {
   const [showAlternateHeader, setShowAlternateHeader] = useState(false);
@@ -64,7 +65,7 @@ export default function Home() {
 
       {/* SECTION CONTEÚDO PRINCIPAL */}
       <motion.div
-        className="sticky top-0 h-screen flex items-center justify-center"
+        className="min-h-screen flex items-center justify-center"
         initial={{ opacity: 0, y: -50 }}
         animate={{
           opacity: showAlternateHeader ? 1 : 0,
@@ -72,10 +73,7 @@ export default function Home() {
         }}
         transition={{ duration: 0.3 }}
       >
-        <div className="w-[480px] h-[720px] border-2 border-gray-300 p-4 flex flex-col items-center justify-center">
-          <h1>Conteúdo principal</h1>
-          <p>Você chegou aqui rolando!</p>
-        </div>
+        <Forms />
       </motion.div>
     </div>
   );
