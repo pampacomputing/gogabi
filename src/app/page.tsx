@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Forms from "@/components/Forms";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [showAlternateHeader, setShowAlternateHeader] = useState(false);
-
+  
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const handleScroll = () => {
-      // Ao passar da metade da altura do viewport, trocamos para o conteúdo.
       if (window.scrollY > window.innerHeight / 2) {
         setShowAlternateHeader(true);
       } else {
@@ -21,12 +23,10 @@ export default function Home() {
   }, []);
 
   return (
-    // 200vh para haver espaço de sobra para rolagem e ativar a transição
-    <div className="h-[200vh] w-full">
-      {/* SECTION HEADER */}
+    <div className="h-full w-full bg-gradient-to-b from-[#066360] to-[#69B4B1]">
+      {/* -- Header (ocupa a tela toda e some quando scroll > metade da tela) -- */}
       <motion.div
-        // sticky + top-0 mantém este bloco ocupando a tela ao rolar
-        className="sticky top-0 h-screen flex items-center justify-center relative"
+        className="sticky top-0 h-screen flex items-center justify-center relative pointer-events-none"
         initial={{ opacity: 1, y: 0 }}
         animate={{
           opacity: showAlternateHeader ? 0 : 1,
@@ -36,10 +36,9 @@ export default function Home() {
       >
         <Header />
 
-        {/* SETA ANIMADA - aparece só enquanto o Header está visível */}
         {!showAlternateHeader && (
           <motion.div
-            className="absolute bottom-10 flex flex-col items-center"
+            className="absolute bottom-10 flex flex-col items-center pointer-events-none"
             initial={{ opacity: 1 }}
             animate={{ y: [0, 10, 0] }}
             transition={{
@@ -48,7 +47,7 @@ export default function Home() {
               ease: "easeInOut",
             }}
           >
-            {/* Você pode trocar esse SVG por outro ícone de seta de sua preferência */}
+            {/* Ícone de setinha pulando */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-8 w-8 text-gray-600"
@@ -63,7 +62,7 @@ export default function Home() {
         )}
       </motion.div>
 
-      {/* SECTION CONTEÚDO PRINCIPAL */}
+      {/* -- Forms (ocupa ao menos a altura de uma tela) -- */}
       <motion.div
         className="min-h-screen flex items-center justify-center"
         initial={{ opacity: 0, y: -50 }}
@@ -74,6 +73,15 @@ export default function Home() {
         transition={{ duration: 0.3 }}
       >
         <Forms />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Footer />
       </motion.div>
     </div>
   );
